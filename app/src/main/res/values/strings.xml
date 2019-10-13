@@ -8,4 +8,10 @@
     <string name="action_save">Save</string>
     <string name="memo_title_empty_error">Please provide a title for this memo</string>
     <string name="memo_text_empty_error">Please provide a memo description</string>
+
+    <string name="home_filter_view_discovery_title">Filter View</string>
+    <string name="home_filter_view_discovery_description">Click here to switch between showing all and showing open memos</string>
+
+    <string name="home_fab_discovery_title">Create new memos</string>
+    <string name="home_fab_discovery_description">Click here to create a new memo</string>
 </resources>

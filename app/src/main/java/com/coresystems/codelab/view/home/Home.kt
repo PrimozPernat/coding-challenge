@@ -15,6 +15,10 @@ import android.widget.CompoundButton
 import com.coresystems.codelab.R
 import com.coresystems.codelab.model.Android
 import com.coresystems.codelab.model.Memo
+import com.coresystems.codelab.util.*
+import com.coresystems.codelab.util.DiscoveryFeature
+import com.coresystems.codelab.util.DiscoveryFeatureView
+import com.coresystems.codelab.util.DiscoveryFeatureFunction
 import com.coresystems.codelab.view.create.CreateMemo
 import com.coresystems.codelab.view.detail.BUNDLE_MEMO_ID
 import com.coresystems.codelab.view.detail.ViewMemo
@@ -35,6 +39,7 @@ class Home : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        toolbar.inflateMenu(R.menu.menu_home)
         setSupportActionBar(toolbar)
 
         //Setup observation of the memo list (that we'll update the adapter with once it changes)
@@ -59,8 +64,10 @@ class Home : AppCompatActivity() {
 
         fab.setOnClickListener {
             //Handles clicks on the FAB button > creates a new Memo
-            startActivity(Intent(this@Home, CreateMemo::class.java))
+            createMemoActivity()
         }
+
+        createListOfDiscoveryFeatures()
     }
 
     private fun observeViewModel(@NonNull viewModel: HomeViewModel, showAll: Boolean) {
@@ -87,21 +94,49 @@ class Home : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_show_all -> {
-                observeViewModel(model, true)
-                //Switch available menu options
-                menuItemShowAll.isVisible = false
-                menuItemShowOpen.isVisible = true
+                showAllItems()
                 true
             }
             R.id.action_show_open -> {
-                observeViewModel(model, false)
-                //Switch available menu options
-                menuItemShowOpen.isVisible = false
-                menuItemShowAll.isVisible = true
+                showOpenItems()
                 true
             }
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showOpenItems() {
+        observeViewModel(model, false)
+        //Switch available menu options
+        menuItemShowOpen.isVisible = false
+        menuItemShowAll.isVisible = true
+    }
+
+    private fun showAllItems() {
+        observeViewModel(model, true)
+        //Switch available menu options
+        menuItemShowAll.isVisible = false
+        menuItemShowOpen.isVisible = true
+
+    }
+
+    private fun createListOfDiscoveryFeatures() {
+        DiscoveryFeature(this, SharedPreferencesManager.instance, arrayListOf(
+                DiscoveryFeatureMenuItem(toolbar,
+                        menuId = R.id.action_show_all,
+                        title = getString(R.string.home_filter_view_discovery_title),
+                        description = getString(R.string.home_filter_view_discovery_description),
+                        discoveryFeatureFunction = DiscoveryFeatureFunction({ showAllItems() }, ACTION_SHOW_ALL_DISCOVERY)),
+
+                DiscoveryFeatureView(fab,
+                        title = getString(R.string.home_fab_discovery_title),
+                        description = getString(R.string.home_fab_discovery_description),
+                        discoveryFeatureFunction = DiscoveryFeatureFunction({ createMemoActivity() }, FAB_CREATE_MEMOS_DISCOVERY))))
+
+    }
+
+    private fun createMemoActivity() {
+        startActivity(Intent(this@Home, CreateMemo::class.java))
     }
 }
