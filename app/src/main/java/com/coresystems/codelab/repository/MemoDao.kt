@@ -36,10 +36,6 @@ interface MemoDao {
     /**
      * @return the memo whose id matches the given id.
      */
-    /*
-    TODO there is a bug in kotlin where it renames parameters to arg0 (or other values - see gradle build error log)
-    here is the related issue over at jetbrains: https://youtrack.jetbrains.com/issue/KT-18048
-     */
-    @Query("SELECT * FROM memo WHERE id = :arg0")
+    @Query("SELECT * FROM memo WHERE id = :memoId")
     fun getMemoById(memoId: Long): Memo
 }

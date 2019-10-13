@@ -18,13 +18,13 @@ internal class MemoAdapter(private val items: MutableList<Memo>,
                            private val onClick: View.OnClickListener,
                            private val onCheckboxChanged: CompoundButton.OnCheckedChangeListener) : RecyclerView.Adapter<MemoViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MemoViewHolder {
-        return MemoViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recyclerview_memo, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemoViewHolder {
+        return MemoViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_memo, parent, false))
     }
 
-    override fun onBindViewHolder(holder: MemoViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: MemoViewHolder, position: Int) {
         val memo = items[position]
-        holder?.update(memo, onClick, onCheckboxChanged)
+        holder.update(memo, onClick, onCheckboxChanged)
     }
 
     override fun getItemCount(): Int = items.size
