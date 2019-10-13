@@ -6,9 +6,11 @@ import android.util.SparseArray
 import android.view.View
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.getkeepsafe.taptargetview.TapTargetView
 
 const val ACTION_SHOW_ALL_DISCOVERY = 1
 const val FAB_CREATE_MEMOS_DISCOVERY = 2
+const val SAVE_CREATED_MEMO_DISCOVERY = 3
 
 class DiscoveryFeature(activity: Activity, val preferencesManager: ISharedPreferencesManager, features: List<DiscoveryFeatureView>) {
 
@@ -16,22 +18,47 @@ class DiscoveryFeature(activity: Activity, val preferencesManager: ISharedPrefer
         //Create a discovery features that have to be displayed
         val targets = createTargets(features)
 
-        //Create list of functions that have to be executed on specific feature
+        //Create list of functions that have to be execudet on specific feature
         val lambdaFunctions = lambdasFunctionSparseArray(features)
 
-        TapTargetSequence(activity).targets(targets).listener(object : TapTargetSequence.Listener {
-            override fun onSequenceCanceled(lastTarget: TapTarget?) {
-            }
+        if (targets.size > 1) {
+            TapTargetSequence(activity).targets(targets).listener(object : TapTargetSequence.Listener {
+                override fun onSequenceCanceled(lastTarget: TapTarget?) {
+                }
 
-            override fun onSequenceFinish() {
+                override fun onSequenceFinish() {
 
-            }
+                }
 
-            override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {
-                lambdaFunctions[lastTarget?.id() ?: -1].function.invoke()
-                preferencesManager.setValue(lastTarget!!.id().toString(), true)
-            }
-        }).start()
+                override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {
+                    lambdaFunctions[lastTarget?.id() ?: -1].function.invoke()
+                    preferencesManager.setValue(lastTarget!!.id().toString(), true)
+                }
+            }).start()
+        } else if (targets.isNotEmpty()) {
+            TapTargetView.showFor(activity, targets.first(), object : TapTargetView.Listener() {
+                override fun onTargetClick(view: TapTargetView?) {
+                    super.onTargetClick(view)
+                    lambdaFunctions[targets.first().id()].function.invoke()
+                    preferencesManager.setValue(targets.first().id().toString(), true)
+                }
+
+                override fun onOuterCircleClick(view: TapTargetView?) {
+                    if (lambdaFunctions[targets.first().id()].cancelable) {
+                        preferencesManager.setValue(targets.first().id().toString(), true)
+                        view?.dismiss(false)
+                    }
+                }
+
+                override fun onTargetCancel(view: TapTargetView?) {
+                    if (lambdaFunctions[targets[0].id()].cancelable) {
+                        preferencesManager.setValue(targets.first().id().toString(), true)
+                        view?.dismiss(false)
+                    }
+                }
+
+            })
+        }
     }
 
     private fun lambdasFunctionSparseArray(features: List<DiscoveryFeatureView>): SparseArray<DiscoveryFeatureFunctionCancelable> {
@@ -64,6 +91,7 @@ class DiscoveryFeature(activity: Activity, val preferencesManager: ISharedPrefer
         return targets
     }
 }
+
 
 open class DiscoveryFeatureView(val view: View, val title: String,
                                 val description: String,

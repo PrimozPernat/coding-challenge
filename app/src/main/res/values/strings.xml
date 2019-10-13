@@ -14,4 +14,7 @@
 
     <string name="home_fab_discovery_title">Create new memos</string>
     <string name="home_fab_discovery_description">Click here to create a new memo</string>
+
+    <string name="create_memo_discovery_title">Saving</string>
+    <string name="create_memo_discovery_description">Click here to save the memo</string>
 </resources>

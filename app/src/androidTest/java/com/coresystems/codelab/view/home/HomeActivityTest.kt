@@ -2,15 +2,12 @@ package com.coresystems.codelab.view.home
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.coresystems.codelab.R
-import com.coresystems.codelab.util.ACTION_SHOW_ALL_DISCOVERY
-import com.coresystems.codelab.util.FAB_CREATE_MEMOS_DISCOVERY
-import com.coresystems.codelab.util.SharedPreferencesManager
+import com.coresystems.codelab.util.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
@@ -20,7 +17,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
-    val TARGET_VIE_NAME = "TapTarget"
+
 
     @Test
     fun normalFlowOnFirstStart() {
@@ -79,7 +76,7 @@ class HomeActivityTest {
 
 
         //assert
-        assertThat(true, `is`(checkIfViewWithClassNameDoesNotExist(TARGET_VIE_NAME)))
+        assertThat(true, `is`(TARGET_VIE_NAME.checkIfViewWithClassNameDoesNotExist()))
     }
 
     private fun featuresNotDiscovered() {
@@ -91,13 +88,4 @@ class HomeActivityTest {
         SharedPreferencesManager.instance.setValue(FAB_CREATE_MEMOS_DISCOVERY.toString(), true)
     }
 
-    private fun checkIfViewWithClassNameDoesNotExist(className: String): Boolean {
-        return try {
-            //Check if a view with the TapTarget view is displayed
-            onView(withClassName(containsString(className))).check(matches(isDisplayed()))
-            false
-        } catch (e: NoMatchingViewException) {
-            true
-        }
-    }
 }
