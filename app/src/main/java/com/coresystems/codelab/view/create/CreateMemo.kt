@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.coresystems.codelab.R
+import com.coresystems.codelab.util.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_create_memo.*
 
@@ -19,7 +20,11 @@ class CreateMemo : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_memo)
         setSupportActionBar(toolbar)
+        toolbar.inflateMenu(R.menu.menu_create_memo)
+
         model = ViewModelProviders.of(this).get(CreateMemoViewModel::class.java)
+
+        createListOfDiscoveryFeatures()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -45,5 +50,16 @@ class CreateMemo : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun createListOfDiscoveryFeatures() {
+        DiscoveryFeature(this, SharedPreferencesManager.instance, arrayListOf(
+                DiscoveryFeatureMenuItem(toolbar,
+                        menuId = R.id.action_save,
+                        title = getString(R.string.create_memo_discovery_title),
+                        description = getString(R.string.create_memo_discovery_description),
+                        cancelable = true,
+                        discoveryFeatureFunction = DiscoveryFeatureFunction({ }, SAVE_CREATED_MEMO_DISCOVERY))))
+
     }
 }

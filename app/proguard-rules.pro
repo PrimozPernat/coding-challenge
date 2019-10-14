@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+#TapTargetView rules
+-keep class android.support.v7.widget.Toolbar { *** mMenuView; }
+-keep class android.support.v7.widget.ActionMenuView { *** mPresenter; }
+-keep class android.support.v7.widget.ActionMenuPresenter { *** mOverflowButton; }
