@@ -1,11 +1,12 @@
 package com.coresystems.codelab.view.create
 
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withClassName
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.coresystems.codelab.R
 import com.coresystems.codelab.util.SAVE_CREATED_MEMO_DISCOVERY
@@ -26,8 +27,8 @@ class CreateMemoTest {
         featuresNotDiscovered()
         ActivityScenario.launch(CreateMemo::class.java)
 
-        onView(ViewMatchers.withClassName(CoreMatchers.containsString(TARGET_VIE_NAME))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        onView(ViewMatchers.withId(R.id.action_save)).perform(ViewActions.click())
+        onView(withClassName(CoreMatchers.containsString(TARGET_VIE_NAME))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.action_save)).perform(ViewActions.click())
 
         //All features where displayed check the values in share preferences
         MatcherAssert.assertThat(SharedPreferencesManager.instance.getValue(SAVE_CREATED_MEMO_DISCOVERY.toString()), CoreMatchers.`is`(true))
@@ -55,7 +56,7 @@ class CreateMemoTest {
         val scenario = ActivityScenario.launch(CreateMemo::class.java)
 
         //Click outsideOfTheDiscoveryFeature
-        onView(ViewMatchers.withId(R.id.action_save)).perform(ViewActions.click())
+        onView(withId(R.id.memo_description_container)).perform(ViewActions.click())
 
         MatcherAssert.assertThat(true, CoreMatchers.`is`(TARGET_VIE_NAME.checkIfViewWithClassNameDoesNotExist()))
 
